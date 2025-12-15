@@ -13,16 +13,23 @@ public:
 	{
 		SetTitle(pTitle);
 		m_pText[0] = 0;
+
+		ofn.lStructSize = sizeof(ofn);
+		ofn.lpstrFile = mfile;
+		ofn.nMaxFile = sizeof(mfile);
+		ofn.lpstrFilter = "Dragon Nest Pak File (.pak)\0*.pak\0";
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_READONLY;
 	}
 	virtual void OnGui()
 	{
-	    OPENFILENAME ofname;
-		ImGui::Text("Hello, world! I'm an alone window");
-
-
+		if (ImGui::Button("Open file")) {
+			// TODO: error handling
+			GetOpenFileNameA(&ofn);
+		}
+		ImGui::TextUnformatted(mfile);
 		// ImGui::InputText("Input", m_pText, 512);
 
-		//ImGui::ShowMetricsWindow();
+		// ImGui::ShowMetricsWindow();
 	}
 
 	virtual void OnMenu()
@@ -32,14 +39,11 @@ public:
 		    ImGui::InputText("Input", m_pText, sizeof(m_pText));
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("MyImwWindow2"))
-		{
-		    ImGui::InputText("Input", m_pText, sizeof(m_pText));
-			ImGui::EndMenu();
-		}
 	}
 
-	char m_pText[512];
+	OPENFILENAMEA ofn {};
+	char mfile[260] {};
+	char m_pText[512] {};
 };
 
 int main() {
