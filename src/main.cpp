@@ -97,14 +97,22 @@ public:
 				var4 = pak.copy_data();
 			}
 		}
+		// tree nodes selectable nodes
+		// ImGuiTreeNodeFlags_Selected
 		ImGui::Text("File Path: %s", mfile);
 		ImGui::TextUnformatted("List of files: ");
 		for (pak::file_index_decomp& s : var4) {
 			ImGui::TextUnformatted(s.filepath);
-			ImGui::Text("%08x", s.rawsz);
-			ImGui::Text("%08x", s.decompsz);
-			ImGui::Text("%08x", s.compsz);
-			ImGui::Text("%08x", s.offset);
+			// ImGui::Text("%08x", s.rawsz);
+			// ImGui::Text("%08x", s.decompsz);
+			// ImGui::Text("%08x", s.compsz);
+			// ImGui::Text("%08x", s.offset);
+		}
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
+		ImGui::TreeNodeEx("Resource", node_flags);
+		ImGui::TreePop();
+		if (GetAsyncKeyState(0x0)) {
+			// add clicked leaf + 1 +1 etc
 		}
 		// ImGui::Text("%zu",var2);
 		// ImGui::InputText("Input", m_pText, 512);
