@@ -97,6 +97,8 @@ public:
 				var4 = pak.copy_data();
 			}
 		}
+		// tree nodes selectable nodes
+		// ImGuiTreeNodeFlags_Selected
 		ImGui::Text("File Path: %s", mfile);
 		ImGui::TextUnformatted("List of files: ");
 		for (pak::file_index_decomp& s : var4) {
