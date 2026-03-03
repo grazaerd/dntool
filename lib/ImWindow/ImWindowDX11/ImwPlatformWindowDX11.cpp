@@ -2,6 +2,7 @@
 #include "ImwPlatformWindowDX11.h"
 
 #include "ImwWindowManagerDX11.h"
+#include "imgui.h"
 
 #include <d3dcommon.h>
 #include <d3d11.h>
@@ -434,7 +435,7 @@ void ImwPlatformWindowDX11::RegenFontTexture(ImwPlatformWindow* pMain)
 		m_pDX11Device->CreateSamplerState(&oSamplerDesc, &m_pDX11FontSampler);
 	}
 	// Store our identifier
-	io.Fonts->TexID = (void *)(intptr_t)m_pDX11FontTextureView;
+	io.Fonts->TexID = (ImTextureID)m_pDX11FontTextureView;
 }
 
 void ImwPlatformWindowDX11::OnClientSize(int iClientWidth, int iClientHeight)

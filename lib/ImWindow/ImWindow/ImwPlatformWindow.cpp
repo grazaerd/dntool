@@ -28,7 +28,7 @@ namespace ImWindow
 			oNewIO.ClipboardUserData = oGlobalIO.ClipboardUserData;
 			oNewIO.GetClipboardTextFn = oGlobalIO.GetClipboardTextFn;
 			oNewIO.SetClipboardTextFn = oGlobalIO.SetClipboardTextFn;
-			oNewIO.SetPlatformImeDataFn = oGlobalIO.SetPlatformImeDataFn;
+			// oNewIO.SetPlatformImeDataFn = oGlobalIO.SetPlatformImeDataFn;
 			oNewIO.IniFilename = NULL;
 		}
 	}
@@ -169,7 +169,7 @@ namespace ImWindow
 			if (NULL != m_pContext)
 			{
 				m_pContext->NextWindowData.PosCond = m_pContext->NextWindowData.SizeCond = m_pContext->NextWindowData.CollapsedCond = 0;
-				m_pContext->NextWindowData.Flags = m_pContext->NextWindowData.Flags & ~( ImGuiNextWindowDataFlags_HasFocus | ImGuiNextWindowDataFlags_HasContentSize );
+				m_pContext->NextWindowData.HasFlags = m_pContext->NextWindowData.HasFlags & ~( ImGuiNextWindowDataFlags_HasFocus | ImGuiNextWindowDataFlags_HasContentSize );
 				m_pContext->ActiveId = 0;
 
 				m_pContext->IO.ClearInputKeys();

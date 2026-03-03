@@ -1072,7 +1072,7 @@ namespace ImWindow
 			if (bDisplayMenus)
 			{
 				oSize.y += pContext->FontSize + pContext->Style.FramePadding.y * 2.0f;
-				oSize.y += ImGui::GetCurrentWindowRead()->MenuBarHeight();
+				oSize.y += ImGui::GetCurrentWindowRead()->MenuBarHeight;
 
 			}
 			ImGui::SetNextWindowSize(oSize, ImGuiCond_Always);
