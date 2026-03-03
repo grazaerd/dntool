@@ -111,12 +111,46 @@ public:
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
 		ImGui::TreeNodeEx("Resource", node_flags);
 		ImGui::TreePop();
-		if (GetAsyncKeyState(0x0)) {
-			// add clicked leaf + 1 +1 etc
-		}
+		// if (GetAsyncKeyState(0x0)) {
+		// 	// add clicked leaf + 1 +1 etc
+		// }
 		// ImGui::Text("%zu",var2);
 		// ImGui::InputText("Input", m_pText, 512);
+		static const char* ExampleNames[] =
+		{
+			"Artichoke", "Arugula", "Asparagus", "Avocado", "Bamboo Shoots", "Bean Sprouts", "Beans", "Beet", "Belgian Endive", "Bell Pepper",
+			"Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts", "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
+			"Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber"
+		};
+        if (ImGui::TreeNode("Multi-Select"))
+        {
+            // Use default selection.Adapter: Pass index to SetNextItemSelectionUserData(), store index in Selection
+            const int ITEMS_COUNT = 50;
+            static ImGuiSelectionBasicStorage selection;
+            ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
+			
+            // The BeginChild() has no purpose for selection logic, other that offering a scrolling region.
+            if (ImGui::BeginChild("##Basket", ImVec2(100, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
+            {
+                ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
+                ImGuiMultiSelectIO* ms_io = ImGui::BeginMultiSelect(flags, selection.Size, ITEMS_COUNT);
+                selection.ApplyRequests(ms_io);
 
+                for (int n = 0; n < ITEMS_COUNT; n++)
+                {
+                    char label[64];
+                    sprintf(label, "Object %05d: %s", n, ExampleNames[n % IM_ARRAYSIZE(ExampleNames)]);
+                    bool item_is_selected = selection.Contains((ImGuiID)n);
+                    ImGui::SetNextItemSelectionUserData(n);
+                    ImGui::Selectable(label, item_is_selected);
+                }
+
+                ms_io = ImGui::EndMultiSelect();
+                selection.ApplyRequests(ms_io);
+            }
+            ImGui::EndChild();
+            ImGui::TreePop();
+        }
 		// ImGui::ShowMetricsWindow();
 	}
 

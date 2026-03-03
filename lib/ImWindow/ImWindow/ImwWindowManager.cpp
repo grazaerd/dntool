@@ -1093,8 +1093,9 @@ namespace ImWindow
 			oStyle.WindowPadding = ImVec2(0.f, 0.f);
 			oStyle.WindowMinSize = ImVec2(0.f, 0.f);
 			bool bWindowDraw = ImGui::Begin("ImWindow", NULL, iFlags);
-			ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGui::GetCurrentWindow()->ID); // Disable ImGui CTRL+Tab
-			ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGui::GetCurrentWindow()->ID);
+			// assert causes imgui.cpp, line 9074
+			// ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_Tab, ImGui::GetCurrentWindow()->ID); // Disable ImGui CTRL+Tab
+			// ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab, ImGui::GetCurrentWindow()->ID);
 			oStyle.WindowRounding = fWindowRoundingBackup;
 			oStyle.WindowPadding = oWindowPaddingBackup;
 			oStyle.WindowMinSize = oWindowMinSizeBackup;
