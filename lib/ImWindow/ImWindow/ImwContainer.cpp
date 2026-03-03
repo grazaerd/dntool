@@ -893,7 +893,7 @@ namespace ImWindow
 					oStyle.WindowPadding = ImVec2(0.f, 0.f);
 				}
 
-				ImGui::BeginChild(pActiveWindow->GetId(), ImVec2(0.f, 0.f), false, ImGuiWindowFlags_HorizontalScrollbar | ImGuiChildFlags_AlwaysUseWindowPadding);
+				ImGui::BeginChild(pActiveWindow->GetId(), ImVec2(0.f, 0.f), false, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysUseWindowPadding);
 
 				if (pActiveWindow->IsFillingSpace())
 				{

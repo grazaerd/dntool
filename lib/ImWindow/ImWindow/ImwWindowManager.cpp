@@ -1051,7 +1051,7 @@ namespace ImWindow
 			| ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 		const int c_iWindowChildFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
-		const int c_iWindowChildFlagsWithPadding = c_iWindowChildFlags | ImGuiChildFlags_AlwaysUseWindowPadding;
+		const int c_iWindowChildFlagsWithPadding = c_iWindowChildFlags | ImGuiWindowFlags_AlwaysUseWindowPadding;
 
 		bool bDisplayMenus = pWindow->IsShowContent() || oIO.MousePos.y <= 50.f || pContext->OpenPopupStack.size() > 0;
 		bool bDisplayWindow = bDisplayMenus || IsUsingCustomFrame();
@@ -1072,7 +1072,7 @@ namespace ImWindow
 			if (bDisplayMenus)
 			{
 				oSize.y += pContext->FontSize + pContext->Style.FramePadding.y * 2.0f;
-				oSize.y += ImGui::GetCurrentWindowRead()->MenuBarHeight;
+				oSize.y += ImGui::GetCurrentWindowRead()->MenuBarHeight();
 
 			}
 			ImGui::SetNextWindowSize(oSize, ImGuiCond_Always);

@@ -18,19 +18,17 @@ namespace ImWindow
 
 		if (bCreateContext)
 		{
-		    // https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md
 			ImGuiContext* pGlobalContext = ImGui::GetCurrentContext();
 			IM_ASSERT(pGlobalContext != NULL);
 
 			m_pContext = ImGui::CreateContext(pGlobalContext->IO.Fonts);
-			m_pContext->IO.BackendFlags |= (pGlobalContext->IO.BackendFlags & ImGuiBackendFlags_RendererHasTextures);
 			ImGuiIO& oGlobalIO = pGlobalContext->IO;
 			ImGuiIO& oNewIO = m_pContext->IO;
 
 			oNewIO.ClipboardUserData = oGlobalIO.ClipboardUserData;
 			oNewIO.GetClipboardTextFn = oGlobalIO.GetClipboardTextFn;
 			oNewIO.SetClipboardTextFn = oGlobalIO.SetClipboardTextFn;
-			// oNewIO.SetPlatformImeDataFn = oGlobalIO.SetPlatformImeDataFn;
+			oNewIO.SetPlatformImeDataFn = oGlobalIO.SetPlatformImeDataFn;
 			oNewIO.IniFilename = NULL;
 		}
 	}
@@ -171,7 +169,7 @@ namespace ImWindow
 			if (NULL != m_pContext)
 			{
 				m_pContext->NextWindowData.PosCond = m_pContext->NextWindowData.SizeCond = m_pContext->NextWindowData.CollapsedCond = 0;
-				m_pContext->NextWindowData.HasFlags = m_pContext->NextWindowData.HasFlags & ~( ImGuiNextWindowDataFlags_HasFocus | ImGuiNextWindowDataFlags_HasContentSize );
+				m_pContext->NextWindowData.Flags = m_pContext->NextWindowData.Flags & ~( ImGuiNextWindowDataFlags_HasFocus | ImGuiNextWindowDataFlags_HasContentSize );
 				m_pContext->ActiveId = 0;
 
 				m_pContext->IO.ClearInputKeys();
