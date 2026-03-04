@@ -71,6 +71,99 @@ private:
 class MyImwWindow : public ImwWindow, ImwMenu {
 public:
 	MyImwWindow(const char* pTitle = "MyImwWindow")
+		: ImwWindow()
+		, ImwMenu(0, false)
+	{
+		SetTitle(pTitle);
+		m_pText[0] = 0;
+
+		ofn.lStructSize = sizeof(ofn);
+		ofn.lpstrFile = mfile;
+		ofn.nMaxFile = sizeof(mfile);
+		ofn.lpstrFilter = "Dragon Nest Pak File (.pak)\0*.pak\0";
+		ofn.lpstrInitialDir = "C:\\";
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_READONLY;
+	}
+	virtual void OnGui()
+	{
+		static std::string var;
+		static std::size_t var2;
+		static std::vector<std::string> var3;
+		static std::vector<pak::file_index_decomp> var4;
+		if (ImGui::Button("Open file")) {
+			// TODO: error handling
+			if (GetOpenFileNameA(&ofn)) {
+				pak.open(mfile);
+				var4 = pak.copy_data();
+			}
+		}
+		// tree nodes selectable nodes
+		// ImGuiTreeNodeFlags_Selected
+		ImGui::Text("File Path: %s", mfile);
+		ImGui::TextUnformatted("List of files: ");
+		for (pak::file_index_decomp& s : var4) {
+			ImGui::TextUnformatted(s.filepath);
+			// ImGui::Text("%08x", s.rawsz);
+			// ImGui::Text("%08x", s.decompsz);
+			// ImGui::Text("%08x", s.compsz);
+			// ImGui::Text("%08x", s.offset);
+		}
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
+		ImGui::TreeNodeEx("Resource", node_flags);
+		ImGui::TreePop();
+		// if (GetAsyncKeyState(0x0)) {
+		// 	// add clicked leaf + 1 +1 etc
+		// }
+		// ImGui::Text("%zu",var2);
+		// ImGui::InputText("Input", m_pText, 512);
+		static const char* ExampleNames[] =
+		{
+			"Artichoke", "Arugula", "Asparagus", "Avocado", "Bamboo Shoots", "Bean Sprouts", "Beans", "Beet", "Belgian Endive", "Bell Pepper",
+			"Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts", "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
+			"Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber"
+		};
+
+            // Use default selection.Adapter: Pass index to SetNextItemSelectionUserData(), store index in Selection
+            const int ITEMS_COUNT = 50;
+            static ImGuiSelectionBasicStorage selection;
+            ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
+			
+            // The BeginChild() has no purpose for selection logic, other that offering a scrolling region.
+            if (ImGui::BeginChild("##Basket", ImVec2(100, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
+            {
+                ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
+                ImGuiMultiSelectIO* ms_io = ImGui::BeginMultiSelect(flags, selection.Size, ITEMS_COUNT);
+                selection.ApplyRequests(ms_io);
+
+                for (int n = 0; n < ITEMS_COUNT; n++)
+                {
+                    char label[64];
+                    sprintf(label, "Object %05d: %s", n, ExampleNames[n % IM_ARRAYSIZE(ExampleNames)]);
+                    bool item_is_selected = selection.Contains((ImGuiID)n);
+                    ImGui::SetNextItemSelectionUserData(n);
+                    ImGui::Selectable(label, item_is_selected);
+                }
+
+                ms_io = ImGui::EndMultiSelect();
+                selection.ApplyRequests(ms_io);
+            }
+            ImGui::EndChild();
+
+		// ImGui::ShowMetricsWindow();
+	}
+
+	virtual void OnMenu()
+	{
+
+	}
+	reader_pak pak;
+	OPENFILENAMEA ofn {};
+	char mfile[260] {};
+	char m_pText[512] {};
+};
+class MyImwWindow2 : public ImwWindow, ImwMenu {
+public:
+	MyImwWindow2(const char* pTitle = "MyImwWindow")
 		: ImwWindow(ImWindow::E_WINDOW_MODE_ALONE)
 		, ImwMenu(0, false)
 	{
@@ -122,8 +215,7 @@ public:
 			"Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts", "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
 			"Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber"
 		};
-        if (ImGui::TreeNode("Multi-Select"))
-        {
+
             // Use default selection.Adapter: Pass index to SetNextItemSelectionUserData(), store index in Selection
             const int ITEMS_COUNT = 50;
             static ImGuiSelectionBasicStorage selection;
@@ -149,8 +241,7 @@ public:
                 selection.ApplyRequests(ms_io);
             }
             ImGui::EndChild();
-            ImGui::TreePop();
-        }
+
 		// ImGui::ShowMetricsWindow();
 	}
 
@@ -163,21 +254,62 @@ public:
 	char mfile[260] {};
 	char m_pText[512] {};
 };
+class PlaceholderWindow : public ImWindow::ImwWindow
+{
+public:
+	PlaceholderWindow()
+		: ImwWindow(ImWindow::E_WINDOW_MODE_PLACEHOLDER)
+	{
+	}
+
+	virtual void OnGui()
+	{
+
+	}
+};
+class MyImwWindow3 : public ImwWindow, ImwMenu {
+public:
+	MyImwWindow3(const char* pTitle = "Output")
+		: ImwWindow()
+		, ImwMenu(0, false) {
+		SetTitle(pTitle);
+
+	}
+
+	virtual void OnGui() {
+
+		ImGui::Text("Todo");
+
+	}
+
+	virtual void OnMenu() {}
+};
+
+
+void InitMain() {
+	ImWindow::ImwWindowManager& oMgr = *ImWindow::ImwWindowManager::GetInstance();
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.095f, 0.095f, 0.095f, 1.f);
+	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.204f, 0.204f, 0.204f, 1.f);
+	style.Colors[ImGuiCol_MenuBarBg] = style.Colors[ImGuiCol_WindowBg];
+	oMgr.SetMainTitle("DnTools WIP");
+
+    ImwWindow* pWindow1 = new MyImwWindow("Files");
+    ImwWindow* pWindow2 = new MyImwWindow3();
+
+	oMgr.Dock(pWindow1);
+	oMgr.DockWith(pWindow2, pWindow1, ImWindow::E_DOCK_ORIENTATION_RIGHT, 0.7f);
+}
+
+
 
 int main() {
 	ImwWindowManagerDX11 oMgr2(true);
-
 	oMgr2.Init();
-
-	ImWindow::ImwWindowManager& oMgr = *ImWindow::ImwWindowManager::GetInstance();
-
-	oMgr.SetMainTitle("DnTools WIP");
-
-    ImwWindow* pWindow1 = new MyImwWindow();
-
-
-    oMgr.Dock(pWindow1);
-
+	
+	InitMain();
+	
 	while (oMgr2.Run(false) && oMgr2.Run(true)) {
 		Sleep(16);
 	}
