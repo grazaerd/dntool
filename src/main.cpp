@@ -101,35 +101,22 @@ public:
 		// ImGuiTreeNodeFlags_Selected
 		ImGui::Text("File Path: %s", mfile);
 		ImGui::TextUnformatted("List of files: ");
-		for (pak::file_index_decomp& s : var4) {
-			ImGui::TextUnformatted(s.filepath);
-			// ImGui::Text("%08x", s.rawsz);
-			// ImGui::Text("%08x", s.decompsz);
-			// ImGui::Text("%08x", s.compsz);
-			// ImGui::Text("%08x", s.offset);
-		}
-		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_Leaf;
-		ImGui::TreeNodeEx("Resource", node_flags);
-		ImGui::TreePop();
-		// if (GetAsyncKeyState(0x0)) {
-		// 	// add clicked leaf + 1 +1 etc
+		// pak::file_index_decomp temp = {};
+		// for (pak::file_index_decomp& s : var4) {
+		// 	ImGui::TextUnformatted(s.filepath);
+		// 	// ImGui::Text("%08x", s.rawsz);
+		// 	// ImGui::Text("%08x", s.decompsz);
+		// 	// ImGui::Text("%08x", s.compsz);
+		// 	// ImGui::Text("%08x", s.offset);
 		// }
-		// ImGui::Text("%zu",var2);
-		// ImGui::InputText("Input", m_pText, 512);
-		static const char* ExampleNames[] =
-		{
-			"Artichoke", "Arugula", "Asparagus", "Avocado", "Bamboo Shoots", "Bean Sprouts", "Beans", "Beet", "Belgian Endive", "Bell Pepper",
-			"Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts", "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
-			"Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber"
-		};
+		
 
-            // Use default selection.Adapter: Pass index to SetNextItemSelectionUserData(), store index in Selection
-            const int ITEMS_COUNT = 50;
+
+            const int ITEMS_COUNT = var4.size();
             static ImGuiSelectionBasicStorage selection;
-            ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
-			
-            // The BeginChild() has no purpose for selection logic, other that offering a scrolling region.
-            if (ImGui::BeginChild("##Basket", ImVec2(100, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
+            // ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
+			ImVec2 avail = ImGui::GetContentRegionAvail();
+            if (ImGui::BeginChild("##Files", ImVec2(avail.x, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
             {
                 ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
                 ImGuiMultiSelectIO* ms_io = ImGui::BeginMultiSelect(flags, selection.Size, ITEMS_COUNT);
@@ -137,8 +124,8 @@ public:
 
                 for (int n = 0; n < ITEMS_COUNT; n++)
                 {
-                    char label[64];
-                    sprintf(label, "Object %05d: %s", n, ExampleNames[n % IM_ARRAYSIZE(ExampleNames)]);
+                    char label[4096];
+                    snprintf(label, sizeof(label), "%s", var4[n].filepath);
                     bool item_is_selected = selection.Contains((ImGuiID)n);
                     ImGui::SetNextItemSelectionUserData(n);
                     ImGui::Selectable(label, item_is_selected);
