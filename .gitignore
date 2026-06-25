@@ -402,3 +402,4 @@ build
 .vscode
 build2
 __cmake_systeminformation
+.zed
