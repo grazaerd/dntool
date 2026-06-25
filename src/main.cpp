@@ -4,7 +4,7 @@
 #include "../ImWindow/ImWindow/ImwWindow.h"
 #include "../ImWindow/ImWindow/ImwWindowManager.h"
 #include "../ImWindow/ImWindowDX11/ImwWindowManagerDX11.h"
-#include "pak/pak.hpp"
+#include "pak/pak_struct.hpp"
 #include <vector>
 
 #include <fstream>
@@ -75,11 +75,11 @@ public:
 		, ImwMenu(0, false)
 	{
 		SetTitle(pTitle);
-		m_pText[0] = 0;
+		m_text[0] = 0;
 
 		ofn.lStructSize = sizeof(ofn);
-		ofn.lpstrFile = mfile;
-		ofn.nMaxFile = sizeof(mfile);
+		ofn.lpstrFile = m_file;
+		ofn.nMaxFile = sizeof(m_file);
 		ofn.lpstrFilter = "Dragon Nest Pak File (.pak)\0*.pak\0";
 		ofn.lpstrInitialDir = "C:\\";
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_READONLY;
@@ -93,13 +93,13 @@ public:
 		if (ImGui::Button("Open file")) {
 			// TODO: error handling
 			if (GetOpenFileNameA(&ofn)) {
-				pak.open(mfile);
+				pak.open(m_file);
 				var4 = pak.copy_data();
 			}
 		}
 		// tree nodes selectable nodes
 		// ImGuiTreeNodeFlags_Selected
-		ImGui::Text("File Path: %s", mfile);
+		ImGui::Text("File Path: %s", m_file);
 		ImGui::TextUnformatted("List of files: ");
 		// pak::file_index_decomp temp = {};
 		// for (pak::file_index_decomp& s : var4) {
@@ -110,12 +110,10 @@ public:
 		// 	// ImGui::Text("%08x", s.offset);
 		// }
 		
-
-
             const int ITEMS_COUNT = var4.size();
             static ImGuiSelectionBasicStorage selection;
             // ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
-			ImVec2 avail = ImGui::GetContentRegionAvail();
+			const ImVec2 avail = ImGui::GetContentRegionAvail();
             if (ImGui::BeginChild("##Files", ImVec2(avail.x, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
             {
                 ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
@@ -145,8 +143,8 @@ public:
 	}
 	reader_pak pak;
 	OPENFILENAMEA ofn {};
-	char mfile[260] {};
-	char m_pText[512] {};
+	char m_file[260] {};
+	char m_text[512] {};
 };
 class MyImwWindow2 : public ImwWindow, ImwMenu {
 public:
