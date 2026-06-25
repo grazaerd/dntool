@@ -1,3 +1,7 @@
 to check:
 https://github.com/ocornut/imgui/issues/129
 https://github.com/ocornut/imgui/wiki/Multi-Select
+
+clang 
+to add:
+https://clang.llvm.org/docs/SafeBuffers.html
