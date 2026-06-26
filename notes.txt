@@ -5,3 +5,9 @@ https://github.com/ocornut/imgui/wiki/Multi-Select
 clang 
 to add:
 https://clang.llvm.org/docs/SafeBuffers.html
+
+
+
+
+// whole folder (possible to make it append I think)
+folder path -> get one file -> get the file size -> compress -> write to resource

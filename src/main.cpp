@@ -1,14 +1,16 @@
+#include <vector>
+#include <fstream>
+#include <bit>
+#include <sstream>
 #include <string>
 #include <windows.h>
+
 #include "../ImWindow/Externals/imgui/imgui.h"
 #include "../ImWindow/ImWindow/ImwWindow.h"
 #include "../ImWindow/ImWindow/ImwWindowManager.h"
 #include "../ImWindow/ImWindowDX11/ImwWindowManagerDX11.h"
 #include "pak/pak_struct.hpp"
-#include <vector>
-
-#include <fstream>
-#include <bit>
+#include "util/compress.hpp"
 
 using namespace ImWindow;
 
@@ -90,17 +92,33 @@ public:
 		static std::size_t var2;
 		static std::vector<std::string> var3;
 		static std::vector<pak::file_index_decomp> var4;
+		static std::ostringstream sstr;
+		static compress comp(6);
+		static uint64_t filesz = 0ull;
+		static unsigned char* fileout = nullptr;
+		static std::ofstream outstream("00Resource", std::ios_base::out | std::ios_base::binary);
 		if (ImGui::Button("Open file")) {
 			// TODO: error handling
 			if (GetOpenFileNameA(&ofn)) {
 				pak.open(m_file);
 				var4 = pak.copy_data();
+				if (comp.work(&fileout, &filesz, m_file)) {
+                    outstream.write((const char*)fileout, filesz);
+                    outstream.close();
+				}
+				
+				// sstr << std::ifstream(m_file, std::ios::in | std::ios::binary).rdbuf();
 			}
 		}
 		// tree nodes selectable nodes
 		// ImGuiTreeNodeFlags_Selected
 		ImGui::Text("File Path: %s", m_file);
 		ImGui::TextUnformatted("List of files: ");
+
+		// for(int i = 0; i != sstr.str().size(); i++) {
+		//     ImGui::SameLine();
+		//     ImGui::Text("%02X", sstr.str().c_str()[i]);
+		// }
 		// pak::file_index_decomp temp = {};
 		// for (pak::file_index_decomp& s : var4) {
 		// 	ImGui::TextUnformatted(s.filepath);
@@ -110,29 +128,29 @@ public:
 		// 	// ImGui::Text("%08x", s.offset);
 		// }
 		
-            const int ITEMS_COUNT = var4.size();
-            static ImGuiSelectionBasicStorage selection;
-            // ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
-			const ImVec2 avail = ImGui::GetContentRegionAvail();
-            if (ImGui::BeginChild("##Files", ImVec2(avail.x, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
-            {
-                ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
-                ImGuiMultiSelectIO* ms_io = ImGui::BeginMultiSelect(flags, selection.Size, ITEMS_COUNT);
-                selection.ApplyRequests(ms_io);
+   //          const int ITEMS_COUNT = var4.size();
+   //          static ImGuiSelectionBasicStorage selection;
+   //          // ImGui::Text("Selection: %d/%d", selection.Size, ITEMS_COUNT);
+			// const ImVec2 avail = ImGui::GetContentRegionAvail();
+   //          if (ImGui::BeginChild("##Files", ImVec2(avail.x, ImGui::GetFontSize() * 20), 0, ImGuiWindowFlags_HorizontalScrollbar))
+   //          {
+   //              ImGuiMultiSelectFlags flags = ImGuiMultiSelectFlags_ClearOnEscape | ImGuiMultiSelectFlags_BoxSelect1d;
+   //              ImGuiMultiSelectIO* ms_io = ImGui::BeginMultiSelect(flags, selection.Size, ITEMS_COUNT);
+   //              selection.ApplyRequests(ms_io);
 
-                for (int n = 0; n < ITEMS_COUNT; n++)
-                {
-                    char label[4096];
-                    snprintf(label, sizeof(label), "%s", var4[n].filepath);
-                    bool item_is_selected = selection.Contains((ImGuiID)n);
-                    ImGui::SetNextItemSelectionUserData(n);
-                    ImGui::Selectable(label, item_is_selected);
-                }
+   //              for (int n = 0; n < ITEMS_COUNT; n++)
+   //              {
+   //                  char label[4096];
+   //                  snprintf(label, sizeof(label), "%s", var4[n].filepath);
+   //                  bool item_is_selected = selection.Contains((ImGuiID)n);
+   //                  ImGui::SetNextItemSelectionUserData(n);
+   //                  ImGui::Selectable(label, item_is_selected);
+   //              }
 
-                ms_io = ImGui::EndMultiSelect();
-                selection.ApplyRequests(ms_io);
-            }
-            ImGui::EndChild();
+   //              ms_io = ImGui::EndMultiSelect();
+   //              selection.ApplyRequests(ms_io);
+   //          }
+   //          ImGui::EndChild();
 
 		// ImGui::ShowMetricsWindow();
 	}
@@ -141,6 +159,7 @@ public:
 	{
 
 	}
+	
 	reader_pak pak;
 	OPENFILENAMEA ofn {};
 	char m_file[260] {};

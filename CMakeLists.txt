@@ -6,7 +6,9 @@ project(dntools)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(dntools src/main.cpp)
+add_executable(dntools src/main.cpp
+            src/util/compress.cpp
+            src/util/file_input.cpp)
 
 set(imwindow "${CMAKE_CURRENT_SOURCE_DIR}/lib/ImWindow")
 set(libdeflate "${CMAKE_CURRENT_SOURCE_DIR}/lib/libdeflate")
