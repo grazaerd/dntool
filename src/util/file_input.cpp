@@ -2,7 +2,7 @@
 
 namespace fs = std::filesystem;
 
-file_in::file_in()
+file_in::file_in(const char* path) : in(path)
     { }
 
 

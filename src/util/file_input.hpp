@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 
 class file_in {
 public:
-    file_in();
+    file_in(const char* path);
     
     uint64_t filesz() const;
 
