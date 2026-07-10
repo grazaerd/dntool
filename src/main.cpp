@@ -11,6 +11,7 @@
 #include "../ImWindow/ImWindowDX11/ImwWindowManagerDX11.h"
 #include "pak/pak_struct.hpp"
 #include "util/compress.hpp"
+#include "util/file_input.hpp" 
 
 using namespace ImWindow;
 
@@ -101,8 +102,9 @@ public:
 			// TODO: error handling
 			if (GetOpenFileNameA(&ofn)) {
 				pak.open(m_file);
+				file_in in(m_file);
 				var4 = pak.copy_data();
-				if (comp.work(&fileout, &filesz, m_file)) {
+				if (comp.work(&fileout, &filesz, in)) {
                     outstream.write((const char*)fileout, filesz);
                     outstream.close();
 				}

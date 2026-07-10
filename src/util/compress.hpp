@@ -17,6 +17,7 @@ private:
     libdeflate_compressor* compressor;
     std::vector<unsigned char*> compressedfile {};
     uint64_t zlib_bound;
+    std::vector<unsigned char*> in_memory {};
 };
 
 #endif

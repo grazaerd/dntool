@@ -2,15 +2,22 @@
 
 namespace fs = std::filesystem;
 
-file_in::file_in(const char* path) : in(path)
-    { }
+file_in::file_in(const char* path) : in(path) {
+    if (!in.empty()) {
+        for(auto const& dir_entry : recur_in) { // TODO: to verify
+            if (!recur_in->is_directory()) {
+                count++;
+            }
+        }
+    }
+}
 
 
 uint64_t file_in::filesz() const {
-    if (in.empty()) {
-        return 0;
+    if (!in.empty()) {
+        return fs::file_size(in);
     }
-    return fs::file_size(in);
+    return 0;
 }
 
 std::string file_in::file_data() {
@@ -29,4 +36,8 @@ std::string file_in::file_data() {
 
 void file_in::set_path(const char* path) {
     in = path;
+}
+
+uint64_t file_in::file_count() const {
+    return count;
 }
