@@ -3,13 +3,14 @@
 namespace fs = std::filesystem;
 
 file_in::file_in(const char* path) : in(path) {
-    if (!in.empty()) {
-        for(auto const& dir_entry : recur_in) { // TODO: to verify
-            if (!recur_in->is_directory()) {
-                count++;
-            }
-        }
-    }
+    // working and tested, enable for multi-path
+    // if (!in.empty()) {
+    //     for(auto const& dir_entry : recur_in) {
+    //         if (!recur_in->is_directory()) {
+    //             count++;
+    //         }
+    //     }
+    // }
 }
 
 

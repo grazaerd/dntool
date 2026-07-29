@@ -20,10 +20,10 @@ public:
 
     uint64_t file_count() const;
 private:
-    fs::path in;
+    fs::path in {};
     fs::recursive_directory_iterator recur_in{in};
-    std::ifstream filestream;
-    uint64_t count;
+    std::ifstream filestream {};
+    uint64_t count = 0ull;
 };
 
 #endif
