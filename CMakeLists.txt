@@ -8,7 +8,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(dntools src/main.cpp
             src/util/compress.cpp
-            src/util/file_input.cpp)
+            src/util/file_input.cpp
+            src/dir.cpp
+            src/dir.hpp
+            )
 
 set(imwindow "${CMAKE_CURRENT_SOURCE_DIR}/lib/ImWindow")
 set(libdeflate "${CMAKE_CURRENT_SOURCE_DIR}/lib/libdeflate")
@@ -24,3 +27,4 @@ target_link_libraries(dntools PRIVATE d3d11)
 target_link_libraries(dntools PRIVATE dxgi)
 target_link_libraries(dntools PRIVATE d3dcompiler)
 target_link_libraries(dntools PRIVATE libdeflate_static)
+target_link_libraries(dntools PRIVATE ole32)

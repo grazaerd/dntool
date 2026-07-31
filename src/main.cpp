@@ -1,14 +1,18 @@
+#include <cstdlib>
+#include <numbers>
 #include <vector>
 #include <fstream>
 #include <bit>
 #include <sstream>
 #include <string>
 #include <windows.h>
+#include <shobjidl.h>
 
 #include "../ImWindow/Externals/imgui/imgui.h"
 #include "../ImWindow/ImWindow/ImwWindow.h"
 #include "../ImWindow/ImWindow/ImwWindowManager.h"
 #include "../ImWindow/ImWindowDX11/ImwWindowManagerDX11.h"
+#include "dir.hpp"
 #include "pak/pak_struct.hpp"
 #include "util/compress.hpp"
 #include "util/file_input.hpp" 
@@ -98,6 +102,10 @@ public:
 		static uint64_t filesz = 0ull;
 		static unsigned char* fileout = nullptr;
 		static std::ofstream outstream("00Resource", std::ios_base::out | std::ios_base::binary);
+		static uint64_t filecount = 0ull;
+		static std::wstring folder = L""; 
+		static char buffer[MAX_PATH];
+		static Directory dir;
 		if (ImGui::Button("Open file")) {
 			// TODO: error handling
 			if (GetOpenFileNameA(&ofn)) {
@@ -108,13 +116,23 @@ public:
                     outstream.write((const char*)fileout, filesz);
                     outstream.close();
 				}
-				
+				// filecount = in.file_count();
 				// sstr << std::ifstream(m_file, std::ios::in | std::ios::binary).rdbuf();
 			}
 		}
+		// todo fix
+		if (ImGui::Button("Select a folder")) {
+    		std::strncpy(buffer, dir.get_folder().c_str(), sizeof(buffer) - 1);
+            buffer[sizeof(buffer) - 1] = '\0';
+
+        }
 		// tree nodes selectable nodes
 		// ImGuiTreeNodeFlags_Selected
 		ImGui::Text("File Path: %s", m_file);
+        // wcstombs(buffer, folder.c_str(), MAX_PATH);
+        
+        ImGui::Text("Folder Path: %s", buffer);
+		// ImGui::Text("File Count: %llu", filecount);
 		ImGui::TextUnformatted("List of files: ");
 
 		// for(int i = 0; i != sstr.str().size(); i++) {
