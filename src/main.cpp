@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <filesystem>
 #include <numbers>
 #include <vector>
 #include <fstream>
@@ -16,6 +17,7 @@
 #include "pak/pak_struct.hpp"
 #include "util/compress.hpp"
 #include "util/file_input.hpp" 
+#include "libdeflate.h"
 
 using namespace ImWindow;
 
@@ -109,13 +111,13 @@ public:
 		if (ImGui::Button("Open file")) {
 			// TODO: error handling
 			if (GetOpenFileNameA(&ofn)) {
-				pak.open(m_file);
-				file_in in(m_file);
-				var4 = pak.copy_data();
-				if (comp.work(&fileout, &filesz, in)) {
-                    outstream.write((const char*)fileout, filesz);
-                    outstream.close();
-				}
+				// pak.open(m_file);
+				// file_in in(m_file);
+				// var4 = pak.copy_data();
+				// if (comp.work(&fileout, &filesz, in)) {
+    //                 outstream.write((const char*)fileout, filesz);
+    //                 outstream.close();
+				// }
 				// filecount = in.file_count();
 				// sstr << std::ifstream(m_file, std::ios::in | std::ios::binary).rdbuf();
 			}
@@ -124,7 +126,6 @@ public:
 		if (ImGui::Button("Select a folder")) {
     		std::strncpy(buffer, dir.get_folder().c_str(), sizeof(buffer) - 1);
             buffer[sizeof(buffer) - 1] = '\0';
-
         }
 		// tree nodes selectable nodes
 		// ImGuiTreeNodeFlags_Selected
@@ -133,7 +134,71 @@ public:
         
         ImGui::Text("Folder Path: %s", buffer);
 		// ImGui::Text("File Count: %llu", filecount);
-		ImGui::TextUnformatted("List of files: ");
+		// ImGui::TextUnformatted("List of files: ");
+		static file_in in2;
+
+if (buffer[0] != 0) {
+    if (ImGui::Button("Compress")) {
+
+        const std::filesystem::path pt = buffer;
+
+        std::ofstream outstream(
+            "00Resource",
+            std::ios::binary | std::ios::trunc
+        );
+
+        if (!outstream)
+            return;
+
+        libdeflate_compressor* compressor =
+            libdeflate_alloc_compressor(12);
+
+        if (!compressor)
+            return;
+
+        for (const auto& dir_entry : std::filesystem::recursive_directory_iterator(pt)) {
+
+            if (!dir_entry.is_regular_file()) {
+                continue;
+            }
+
+            if (!dir_entry.path().has_extension()) {
+                continue;
+            }
+
+            const auto path = dir_entry.path();
+
+            std::ifstream input(path, std::ios::binary);
+
+            std::vector<std::uint8_t> data((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+
+            if (data.empty()) {
+                continue;
+            }
+
+            const size_t max_compressed_size = libdeflate_zlib_compress_bound(compressor, data.size());
+
+            std::vector<std::uint8_t> compressed(max_compressed_size);
+
+            const size_t compressed_size = libdeflate_zlib_compress(compressor,data.data(), data.size(), compressed.data(), compressed.size());
+
+            if (compressed_size == 0) {
+                continue;
+            }
+
+            // std::uint64_t original_size = data.size();
+            // std::uint64_t final_size = compressed_size;
+
+            // outstream.write(reinterpret_cast<const char*>(&original_size), sizeof(original_size));
+
+            // outstream.write(reinterpret_cast<const char*>(&final_size), sizeof(final_size));
+
+            outstream.write(reinterpret_cast<const char*>(compressed.data()), compressed_size);
+        }
+
+        libdeflate_free_compressor(compressor);
+    }
+}
 
 		// for(int i = 0; i != sstr.str().size(); i++) {
 		//     ImGui::SameLine();
